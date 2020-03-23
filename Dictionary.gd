@@ -8,5 +8,14 @@ func _init():
 			FOOD = "RES_FOOD",
 			GOLD = "RES_GOLD",
 			WOOD = "RES_WOOD"
+		},
+		ACTIONS = {
+			HIRE = "ACT_HIRE",
+			WORK = "ACT_WORK"
+		},
+		PLAYER = {
+			EFFICIENCY = "EFFICIENCY",
+			GAIN = "GAIN"
 		}
 	}
+	

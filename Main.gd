@@ -1,18 +1,16 @@
 extends Node
-var MANAGER = preload("./Resource_Manager.gd").new()
+var RES_MANAGER = preload("./Resource_Manager.gd").new()
+var PLAYER_MANAGER = preload("./Player_Manager.gd").new()
 var DICTIONARY = preload("./Dictionary.gd").new()
 var RESOURCES = DICTIONARY.ENUMS.RESOURCES
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+var PLAYER_ENUM = DICTIONARY.ENUMS.PLAYER
 
 func get_resource(res, attr):
-	return MANAGER.get_resource(res)[attr]
+	return RES_MANAGER.get_resource(res)[attr]
 	
 func get_resource_tracker_text():
 	var resource_strings = {
-		FOOD = MANAGER.get_amount_from_resource(RESOURCES.FOOD)
+		FOOD = RES_MANAGER.get_amount_from_resource(RESOURCES.FOOD)
 	}
 	
 	var tracker_text = ""
@@ -22,17 +20,25 @@ func get_resource_tracker_text():
 		tracker_text += string
 	
 	return "[ %s ]" % tracker_text
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
 	
+func update_tracker():
 	$Label.text = get_resource_tracker_text()
 
+func next_day():
+	update_tracker()
+	
+	
+	
+# Lifecycle methods
+func _ready():
+	update_tracker()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
-
+func _process(delta):
+	pass
+	
+	
+# UI methods
 
 func _on_Button_pressed():
-	pass # Replace with function body.
+	RES_MANAGER.set_resource(RESOURCES.FOOD, 1 * PLAYER_MANAGER.get_efficiency_and_increase_gain())
+	next_day()

@@ -13,11 +13,8 @@ func _init():
 	self.RES_FOOD = ResourceModel.new("Food", "Farmers")
 	
 func set_resource(res, amt):
-	self[res].val = amt
+	self[res].val += amt
 
-func set_resource_by_calc(res):
-	pass
-	
 func get_resource(res):
 	return self[res]
 	
