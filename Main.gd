@@ -22,23 +22,28 @@ func get_resource_tracker_text():
 	return "[ %s ]" % tracker_text
 	
 func update_tracker():
-	$Label.text = get_resource_tracker_text()
+	$ResourceTracker.text = get_resource_tracker_text()
 
 func next_day():
 	update_tracker()
 	
-	
+func increase_resource(res):
+	RES_MANAGER.set_resource(res, 1 * PLAYER_MANAGER.get_efficiency_and_increase_gain())
+	next_day()
 	
 # Lifecycle methods
 func _ready():
 	update_tracker()
 
-func _process(delta):
-	pass
+#func _process(delta):
+#	pass
 	
 	
 # UI methods
 
-func _on_Button_pressed():
-	RES_MANAGER.set_resource(RESOURCES.FOOD, 1 * PLAYER_MANAGER.get_efficiency_and_increase_gain())
-	next_day()
+func _on_rFood_pressed():
+	increase_resource(RESOURCES.FOOD)
+
+
+func _on_hFood_pressed():
+	pass # Replace with function body.

@@ -14,6 +14,9 @@ func _init():
 	
 func set_resource(res, amt):
 	self[res].val += amt
+	
+func set_resource_with_workers(res, amt):
+	self[res].val += amt * self[res].workers
 
 func get_resource(res):
 	return self[res]

@@ -2,6 +2,7 @@ extends Node
 
 var EFFICIENCY
 var GAIN
+var SKILL
 
 func _init():
 	self.EFFICIENCY = 0.1
@@ -15,3 +16,6 @@ func get_efficiency_and_increase_gain():
 	var new_eff = self.EFFICIENCY + self.GAIN
 	self.EFFICIENCY = new_eff
 	return original_eff
+
+func get_skill():
+	return self.SKILL

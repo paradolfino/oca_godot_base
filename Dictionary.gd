@@ -15,7 +15,8 @@ func _init():
 		},
 		PLAYER = {
 			EFFICIENCY = "EFFICIENCY",
-			GAIN = "GAIN"
+			GAIN = "GAIN",
+			SKILL = "SKILL"
 		}
 	}
 	
