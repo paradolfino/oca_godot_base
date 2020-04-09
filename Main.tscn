@@ -32,14 +32,26 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="hWood" type="Button" parent="VBoxContainer"]
+margin_top = 76.0
+margin_right = 131.0
+margin_bottom = 96.0
+text = "Hire Lumberjacks"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="ResourceTracker" type="Label" parent="."]
-margin_left = 496.0
-margin_top = 6.0
-margin_right = 550.0
-margin_bottom = 20.0
+anchor_right = 1.0
+margin_left = 152.0
+margin_top = 10.0
+margin_right = -315.0
+margin_bottom = 95.0
 text = "Food: 0g"
+autowrap = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
 [connection signal="pressed" from="VBoxContainer/rFood" to="." method="_on_rFood_pressed"]
 [connection signal="pressed" from="VBoxContainer/hFood" to="." method="_on_hFood_pressed"]
+[connection signal="pressed" from="VBoxContainer/hWood" to="." method="_on_hWood_pressed"]

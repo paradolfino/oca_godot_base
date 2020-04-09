@@ -1,6 +1,8 @@
 extends Node
 
+
 var ENUMS
+var NAMES
 
 func _init():
 	self.ENUMS = {
@@ -18,5 +20,24 @@ func _init():
 			GAIN = "GAIN",
 			SKILL = "SKILL"
 		}
+	}
+	
+	self.NAMES = {
+		FIRST = [
+			"Al", "Alex", "Alice", 
+			"Bradley", "Brady", "Barbara",
+			"Calvin", "Charlie", "Chelsea",
+			"David", "DJ", "Denise"
+			],
+		LAST_PREFIX = [
+			"An", "Bar", "Chen", "Don", "Ed", "Fran"
+		],
+		LAST_MIDFIX = [
+			"", "no", "an", "kar", "ver", "sin", "ras"
+		],
+		LAST_SUFFIX = [
+			"", "ing", "ling", "er", "ar", "an", "en", "vich"
+		]
+		
 	}
 	
