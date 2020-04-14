@@ -43,7 +43,7 @@ func _on_rFood_pressed():
 	increase_resource(RESOURCES.FOOD)
 
 func _on_hFood_pressed():
-	increase_workers(RESOURCES.FOOD)
+	check_has_enough(RESOURCES.FOOD)
 
 func _on_hWood_pressed():
 	check_has_enough(RESOURCES.WOOD)

@@ -1,4 +1,7 @@
 extends Node
+
+# this is a singleton managing npc workers and such
+
 var DICTIONARY = preload("./Dictionary.gd").new()
 var NAMES = DICTIONARY.ENUMS.NAMES
 
