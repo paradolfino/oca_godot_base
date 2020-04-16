@@ -18,40 +18,94 @@ __meta__ = {
 [node name="rFood" type="Button" parent="VBoxContainer"]
 margin_right = 131.0
 margin_bottom = 20.0
-text = "Harvest Wheat"
+rect_pivot_offset = Vector2( 110, 22 )
+text = "Harvest Food"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="rWood" type="Button" parent="VBoxContainer"]
+margin_top = 38.0
+margin_right = 131.0
+margin_bottom = 58.0
+rect_pivot_offset = Vector2( 110, 22 )
+text = "Harvest Wood"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="rIron" type="Button" parent="VBoxContainer"]
+margin_top = 76.0
+margin_right = 131.0
+margin_bottom = 96.0
+rect_pivot_offset = Vector2( 110, 22 )
+text = "Harvest Iron"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="rGold" type="Button" parent="VBoxContainer"]
+margin_top = 114.0
+margin_right = 131.0
+margin_bottom = 134.0
+rect_pivot_offset = Vector2( 110, 22 )
+text = "Harvest Gold"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="rTools" type="Button" parent="VBoxContainer"]
+margin_top = 152.0
+margin_right = 131.0
+margin_bottom = 172.0
+rect_pivot_offset = Vector2( 110, 22 )
+text = "Make Tools"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="hFood" type="Button" parent="VBoxContainer"]
-margin_top = 38.0
+margin_top = 190.0
 margin_right = 131.0
-margin_bottom = 58.0
+margin_bottom = 210.0
 text = "Hire Farmers"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="hWood" type="Button" parent="VBoxContainer"]
-margin_top = 76.0
+margin_top = 228.0
 margin_right = 131.0
-margin_bottom = 96.0
+margin_bottom = 248.0
 text = "Hire Lumberjacks"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ResourceTracker" type="Label" parent="."]
+[node name="ResourceTracker" type="RichTextLabel" parent="."]
 anchor_right = 1.0
 margin_left = 152.0
 margin_top = 10.0
-margin_right = -315.0
-margin_bottom = 95.0
+margin_right = -704.0
+margin_bottom = 376.0
 text = "Food: 0g"
-autowrap = true
+
+[node name="LogBox" type="VBoxContainer" parent="."]
+margin_left = 16.0
+margin_top = 368.0
+margin_right = 432.0
+margin_bottom = 600.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="ColorRect" type="ColorRect" parent="LogBox"]
+margin_right = 416.0
+color = Color( 0, 0, 0, 1 )
 [connection signal="pressed" from="VBoxContainer/rFood" to="." method="_on_rFood_pressed"]
+[connection signal="pressed" from="VBoxContainer/rWood" to="." method="_on_rWood_pressed"]
+[connection signal="pressed" from="VBoxContainer/rIron" to="." method="_on_rIron_pressed"]
+[connection signal="pressed" from="VBoxContainer/rGold" to="." method="_on_rGold_pressed"]
+[connection signal="pressed" from="VBoxContainer/rTools" to="." method="_on_rTools_pressed"]
 [connection signal="pressed" from="VBoxContainer/hFood" to="." method="_on_hFood_pressed"]
 [connection signal="pressed" from="VBoxContainer/hWood" to="." method="_on_hWood_pressed"]

@@ -11,63 +11,87 @@ var RES_IRON : ResourceModel
 var RES_TOOLS : ResourceModel
 
 func _init():
+	# Resource Model:
+	# Resource Name, Workers Name, Costs, Suffix Template, Starting Amount,
+	# Workers output, harvest output
 	self.RES_FOOD = ResourceModel.new(
 		"Food", 
 		"Farmers", 
 		[
-			CostItemModel.new(1, RESOURCES.GOLD),
-			CostItemModel.new(1, RESOURCES.TOOLS)
+			CostItemModel.new(1, 0, RESOURCES.GOLD),
+			CostItemModel.new(1, 0, RESOURCES.TOOLS, false)
 		],
 		SUFFIX_TEMPLATES.WEIGHTED)
 	self.RES_WOOD = ResourceModel.new(
 		"Wood", 
 		"Lumberjacks", 
 		[
-			CostItemModel.new(10, RESOURCES.FOOD),
-			CostItemModel.new(1, RESOURCES.TOOLS)
+			CostItemModel.new(10, 1, RESOURCES.FOOD),
+			CostItemModel.new(1, 0, RESOURCES.TOOLS, false)
 		],
-		SUFFIX_TEMPLATES.WEIGHTED)
+		SUFFIX_TEMPLATES.WEIGHTED,
+		0,
+		10,
+		10)
 	self.RES_GOLD = ResourceModel.new(
 		"Gold", 
 		"Gold Miners", 
 		[
-			CostItemModel.new(10, RESOURCES.FOOD), 
-			CostItemModel.new(1, RESOURCES.TOOLS)
+			CostItemModel.new(10, 1, RESOURCES.FOOD), 
+			CostItemModel.new(1, 0, RESOURCES.TOOLS, false)
 		],
-		SUFFIX_TEMPLATES.WEIGHTED)
+		SUFFIX_TEMPLATES.WEIGHTED,
+		50,
+		10,
+		10
+		)
 	self.RES_IRON = ResourceModel.new(
 		"Iron",
 		"Iron Miners",
 		[
-			CostItemModel.new(10, RESOURCES.FOOD), 
-			CostItemModel.new(1, RESOURCES.TOOLS)
+			CostItemModel.new(10, 1, RESOURCES.FOOD), 
+			CostItemModel.new(1, 0, RESOURCES.TOOLS, false)
 		],
-		SUFFIX_TEMPLATES.WEIGHTED
+		SUFFIX_TEMPLATES.WEIGHTED,
+		0,
+		10,
+		10
 	)
 	self.RES_TOOLS = ResourceModel.new(
 		"Tools", 
 		"Toolmakers", 
 		[
-			CostItemModel.new(5, RESOURCES.GOLD),
-			CostItemModel.new(2, RESOURCES.FOOD),
-			CostItemModel.new(1, RESOURCES.WOOD),
-			CostItemModel.new(1, RESOURCES.IRON)
+			CostItemModel.new(5, 0, RESOURCES.GOLD),
+			CostItemModel.new(2, 1, RESOURCES.FOOD),
+			CostItemModel.new(1, 1, RESOURCES.WOOD),
+			CostItemModel.new(1, 1, RESOURCES.IRON)
 		],
-		SUFFIX_TEMPLATES.NON_WEIGHTED
+		SUFFIX_TEMPLATES.NON_WEIGHTED,
+		10,
+		1,
+		1
 		)
 		
 
 func set_cost_val(res, multiplier):
 	for c in self[res].cost_items:
-		self[c.resource].cost_val += c.val * multiplier
+		if c.isdaily == true:
+			self[c.resource].cost_val += c.val * multiplier
+			
 
 func set_resource(res, amt):
 	self[res].val += amt
 	
-func set_resource_with_workers(res, amt, workers):
+func set_resource_with_harvest(res, amt):
+	if self[res].suffix_template == SUFFIX_TEMPLATES.NON_WEIGHTED: #change later, to new variable
+		self[res].val += self[res].harvest_output
+	else:
+		self[res].val += self[res].harvest_output + amt
+	
+func set_resource_with_workers(res, workers):
 	self[res].workers += workers
 	set_cost_val(res, workers)
-	self[res].val += (amt * self[res].workers) - self[res].cost_val
+	self[res].val += (self[res].workers_output * self[res].workers) - self[res].cost_val
 
 func get_resource(res):
 	return self[res]
@@ -144,7 +168,7 @@ func get_resource_tracker_text():
 		tracker_text += string
 		
 		var workers_string = resource_strings[i].workers_text + ": " + str(resource_strings[i].workers)
-		workers_tracker_text += workers_string + "\n "
+		workers_tracker_text += workers_string + "\n"
 		
 		tracker_text += " (%s / day)\n" % resource_strings[i].val.formatted_workers_amt
 	
@@ -161,22 +185,31 @@ func build_resource_strings():
 	
 func set_all_resources_with_workers(amt, workers):
 	for res in RESOURCES:
-		set_resource_with_workers(RESOURCES[res], amt, workers)
+		set_resource_with_workers(RESOURCES[res], workers)
 
-func deplete_cost_items(res):
+func deplete_cost_items(res, by_harvest):
 	var items = self[res].cost_items
 	for item in items:
-		self[item.resource].val -= item.val
+		if by_harvest == false:
+			if item.isdaily == true:
+				self[item.resource].val -= item.val
+		else:
+			self[item.resource].val -= item.harvest_val
 
-func check_has_enough_resource(res):
+func check_has_enough_resource(res, by_harvest):
 	var has_enough = false
 	var items = self[res].cost_items
 	if items.size() > 0:
 		for item in items:
-			if self[item.resource].val >= item.val:
+			var val = 0
+			if by_harvest == true:
+				val = item.harvest_val
+			else:
+				val = item.val
+			if self[item.resource].val >= val:
 				has_enough = true
 			else:
-				break
+				return false
 	else:
 		has_enough = true
 		pass
@@ -190,15 +223,17 @@ class ResourceModel:
 	var val_text
 	var workers_text
 	var workers_output
+	var harvest_output
 	var cost_val
 	var cost_items
 	var suffix_template
 	
-	func _init(v_text, w_text, cost_items, suffix_template):
-		self.val = 0
-		self.workers = 0
-		self.workers_output = 1
+	func _init(v_text, w_text, cost_items, suffix_template, val = 0, workers_output = 1, harvest_output = 0):
+		self.val = val #starting value
 		self.cost_val = 0
+		self.workers = 0
+		self.workers_output = workers_output
+		self.harvest_output = harvest_output
 		self.val_text = v_text
 		self.workers_text = w_text
 		self.cost_items = cost_items
@@ -210,7 +245,11 @@ class ResourceModel:
 class CostItemModel:
 	var val
 	var resource
+	var isdaily
+	var harvest_val
 	
-	func _init(val, res):
+	func _init(val, harvest_val, res, isdaily = true):
 		self.val = val
+		self.harvest_val = harvest_val;
 		self.resource = res
+		self.isdaily = isdaily

@@ -4,6 +4,7 @@ extends Node
 var ENUMS
 var NAMES
 var SUFFIX_TEMPLATES
+var STRINGS
 
 func _init():
 	self.ENUMS = {
@@ -16,14 +17,13 @@ func _init():
 			# special
 			TOOLS = "RES_TOOLS"
 		},
-		ACTIONS = {
-			HIRE = "ACT_HIRE",
-			WORK = "ACT_WORK"
-		},
 		PLAYER = {
 			EFFICIENCY = "EFFICIENCY",
 			GAIN = "GAIN",
 			SKILL = "SKILL"
+		},
+		GAME = {
+			DAY = "GAME_DAY"
 		}
 	}
 	
