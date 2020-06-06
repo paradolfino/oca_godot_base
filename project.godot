@@ -19,6 +19,10 @@ config/name="One Click Away"
 run/main_scene="res://Main.tscn"
 config/icon="res://icon.png"
 
+[display]
+
+mouse_cursor/custom_image="res://art/hand_cursor.png"
+
 [rendering]
 
 quality/driver/driver_name="GLES2"

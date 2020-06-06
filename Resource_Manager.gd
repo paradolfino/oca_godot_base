@@ -5,7 +5,7 @@ var PLAYER = DICTIONARY.ENUMS.PLAYER
 var SUFFIX_TEMPLATES = DICTIONARY.SUFFIX_TEMPLATES
 
 var RES_FOOD : ResourceModel
-var RES_GOLD : ResourceModel
+var RES_GOLD : ResourceModel #need to change to use new model
 var RES_WOOD : ResourceModel
 var RES_IRON : ResourceModel
 var RES_TOOLS : ResourceModel
@@ -14,63 +14,82 @@ func _init():
 	# Resource Model:
 	# Resource Name, Workers Name, Costs, Suffix Template, Starting Amount,
 	# Workers output, harvest output
-	self.RES_FOOD = ResourceModel.new(
-		"Food", 
-		"Farmers", 
-		[
+#	self.val = data.val || 0 #starting value
+#		self.cost_val = 0
+#		self.workers = 0
+#		self.workers_output = data.workers_output
+#		self.harvest_output = data.harvest_output
+#		self.val_text = data.v_text
+#		self.workers_text = data.w_text
+#		self.cost_items = data.cost_items
+#		self.suffix_template = data.suffix_template
+	self.RES_FOOD = ResourceModel.new({
+		val = 0,
+		workers_output = 10,
+		harvest_output = 10,
+		val_text = "Food",
+		workers_text = "Farmers",
+		action_text = "harvest",
+		cost_items = [
 			CostItemModel.new(1, 0, RESOURCES.GOLD),
 			CostItemModel.new(1, 0, RESOURCES.TOOLS, false)
 		],
-		SUFFIX_TEMPLATES.WEIGHTED)
-	self.RES_WOOD = ResourceModel.new(
-		"Wood", 
-		"Lumberjacks", 
-		[
+		suffix_template = SUFFIX_TEMPLATES.WEIGHTED
+	})
+	self.RES_WOOD = ResourceModel.new({
+		val = 0,
+		workers_output = 10,
+		harvest_output = 10,
+		val_text = "Wood",
+		workers_text = "Lumberjacks",
+		action_text = "chop",
+		cost_items = [
 			CostItemModel.new(10, 1, RESOURCES.FOOD),
 			CostItemModel.new(1, 0, RESOURCES.TOOLS, false)
 		],
-		SUFFIX_TEMPLATES.WEIGHTED,
-		0,
-		10,
-		10)
-	self.RES_GOLD = ResourceModel.new(
-		"Gold", 
-		"Gold Miners", 
-		[
+		suffix_template =  SUFFIX_TEMPLATES.WEIGHTED
+	})
+	self.RES_GOLD = ResourceModel.new({
+		val = 50,
+		workers_output = 10,
+		harvest_output = 10,
+		val_text = "Gold",
+		workers_text = "Gold Miners",
+		action_text = "mine",
+		cost_items = [
 			CostItemModel.new(10, 1, RESOURCES.FOOD), 
 			CostItemModel.new(1, 0, RESOURCES.TOOLS, false)
 		],
-		SUFFIX_TEMPLATES.WEIGHTED,
-		50,
-		10,
-		10
-		)
-	self.RES_IRON = ResourceModel.new(
-		"Iron",
-		"Iron Miners",
-		[
+		suffix_template = SUFFIX_TEMPLATES.WEIGHTED
+		})
+	self.RES_IRON = ResourceModel.new({
+		val = 0,
+		workers_output = 10,
+		harvest_output = 10,
+		val_text = "Iron",
+		workers_text = "Iron Miners",
+		action_text = "mine",
+		cost_items = [
 			CostItemModel.new(10, 1, RESOURCES.FOOD), 
 			CostItemModel.new(1, 0, RESOURCES.TOOLS, false)
 		],
-		SUFFIX_TEMPLATES.WEIGHTED,
-		0,
-		10,
-		10
-	)
-	self.RES_TOOLS = ResourceModel.new(
-		"Tools", 
-		"Toolmakers", 
-		[
+		suffix_template = SUFFIX_TEMPLATES.WEIGHTED
+	})
+	self.RES_TOOLS = ResourceModel.new({
+		val = 10,
+		workers_output = 1,
+		harvest_output = 1,
+		val_text = "Tools",
+		workers_text = "Toolsmiths",
+		action_text = "craft",
+		cost_items = [
 			CostItemModel.new(5, 0, RESOURCES.GOLD),
 			CostItemModel.new(2, 1, RESOURCES.FOOD),
 			CostItemModel.new(1, 1, RESOURCES.WOOD),
 			CostItemModel.new(1, 1, RESOURCES.IRON)
 		],
-		SUFFIX_TEMPLATES.NON_WEIGHTED,
-		10,
-		1,
-		1
-		)
+		suffix_template = SUFFIX_TEMPLATES.NON_WEIGHTED
+	})
 		
 
 func set_cost_val(res, multiplier):
@@ -83,15 +102,37 @@ func set_resource(res, amt):
 	self[res].val += amt
 	
 func set_resource_with_harvest(res, amt):
+	var old_val = self[res].val
+	var by_amt = 0
 	if self[res].suffix_template == SUFFIX_TEMPLATES.NON_WEIGHTED: #change later, to new variable
-		self[res].val += self[res].harvest_output
+		by_amt = self[res].harvest_output
+		self[res].val += by_amt
 	else:
-		self[res].val += self[res].harvest_output + amt
+		by_amt = self[res].harvest_output + amt
+		self[res].val += by_amt
+	return {
+		old_val = old_val, 
+		new_val = self[res].val, 
+		amt = amt, 
+		by_amt = by_amt
+		}
 	
 func set_resource_with_workers(res, workers):
+	var old_val = self[res].val
+	var old_workers = self[res].workers
+	var by_amt = 0
 	self[res].workers += workers
 	set_cost_val(res, workers)
-	self[res].val += (self[res].workers_output * self[res].workers) - self[res].cost_val
+	by_amt = (self[res].workers_output * self[res].workers) - self[res].cost_val
+	self[res].val += by_amt
+	return {
+		old_val = old_val, 
+		new_val = self[res].val, 
+		by_amt = by_amt,
+		by_workers = workers,
+		old_workers = old_workers,
+		new_workers = self[res].workers
+		}
 
 func get_resource(res):
 	return self[res]
@@ -148,7 +189,7 @@ func get_value_suffix(suffix_template, amt):
 	
 	out = str(stepify(float(out), 0.01))
 	
-	return {amt = out, suffix = suffix}
+	return {amt = out, suffix = suffix, formatted_amt = str(amt) + suffix}
 	
 func get_resource_tracker_text():
 	build_resource_strings()
@@ -218,26 +259,28 @@ func check_has_enough_resource(res, by_harvest):
 
 class ResourceModel:
 	
-	var val
-	var workers
-	var val_text
-	var workers_text
-	var workers_output
-	var harvest_output
-	var cost_val
+	var val : float
+	var workers : int
+	var val_text : String
+	var workers_text : String
+	var action_text : String
+	var workers_output : float
+	var harvest_output : float
+	var cost_val : float
 	var cost_items
 	var suffix_template
-	
-	func _init(v_text, w_text, cost_items, suffix_template, val = 0, workers_output = 1, harvest_output = 0):
-		self.val = val #starting value
+		
+	func _init(data):
+		self.val = data.val || 0 #starting value
 		self.cost_val = 0
 		self.workers = 0
-		self.workers_output = workers_output
-		self.harvest_output = harvest_output
-		self.val_text = v_text
-		self.workers_text = w_text
-		self.cost_items = cost_items
-		self.suffix_template = suffix_template
+		self.workers_output = data.workers_output
+		self.harvest_output = data.harvest_output
+		self.val_text = data.val_text
+		self.workers_text = data.workers_text
+		self.action_text = data.action_text
+		self.cost_items = data.cost_items
+		self.suffix_template = data.suffix_template
 		
 	func get_object():
 		return self
@@ -253,3 +296,5 @@ class CostItemModel:
 		self.harvest_val = harvest_val;
 		self.resource = res
 		self.isdaily = isdaily
+		
+	

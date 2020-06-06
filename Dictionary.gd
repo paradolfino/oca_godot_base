@@ -24,6 +24,12 @@ func _init():
 		},
 		GAME = {
 			DAY = "GAME_DAY"
+		},
+		EVENT_TYPES = {
+			CAMPAIGN = "CAMPAIGN",
+			QUEST = "QUEST",
+			RANDOM = "RANDOM",
+			BATTLE = "BATTLE"
 		}
 	}
 	
@@ -48,10 +54,11 @@ func _init():
 	
 	self.SUFFIX_TEMPLATES = {
 		WEIGHTED = [
-			SuffixModel.new("g", 1, 3),
+#			SuffixModel.new("g", 1, 3),
 			SuffixModel.new("kg", 3, 6),
-			SuffixModel.new("Mg", 6, 9),
-			SuffixModel.new("Bg", 9, 12)
+			SuffixModel.new("T", 6, 9),
+			SuffixModel.new("MT", 9, 12),
+			SuffixModel.new("KT", 12, 15)
 		],
 		NON_WEIGHTED = [
 			SuffixModel.new("", 1, 3),
@@ -60,6 +67,13 @@ func _init():
 			SuffixModel.new("B", 9, 12)
 		]
 	}
+	
+	self.STRINGS = {
+		LOG_HARVEST = "%s %s %s %s",
+		LOG_NO_RESOURCES = "Insufficient Resources!"
+	}
+	
+
 	
 class SuffixModel:
 	var suffix
